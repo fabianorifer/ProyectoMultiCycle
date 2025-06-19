@@ -22,7 +22,7 @@ module top (
 		.WriteData(WriteData),
 		.ReadData(ReadData)
 	);
-	mem mem(
+	mem mem(   
 		.clk(clk),
 		.we(MemWrite),
 		.a(Adr),
