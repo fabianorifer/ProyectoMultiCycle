@@ -23,7 +23,8 @@ module decode (
 	input wire [1:0] Op;
 	input wire [5:0] Funct;
 	input wire [3:0] Rd;
-	output wire [1:0] FlagW;
+	//modificacion wire -> reg
+	output reg [1:0] FlagW;
 	output wire PCS;
 	output wire NextPC;
 	output wire RegW;
@@ -35,7 +36,9 @@ module decode (
 	output wire [1:0] ALUSrcB;
 	output wire [1:0] ImmSrc;
 	output wire [1:0] RegSrc;
-	output wire [1:0] ALUControl;
+	
+	//modificacion wire -> reg
+	output reg [1:0] ALUControl;
 	wire Branch;
 	wire ALUOp;
 
@@ -93,6 +96,6 @@ module decode (
 	// Instr Decoder
 	assign ImmSrc = Op;
 	
-	assign RegSrc[1] = Op = 2'b01;
-	assign RegSrc[0] = Op = 2'b10;
+	assign RegSrc[1] = Op == 2'b01;
+	assign RegSrc[0] = Op == 2'b10;
 endmodule
