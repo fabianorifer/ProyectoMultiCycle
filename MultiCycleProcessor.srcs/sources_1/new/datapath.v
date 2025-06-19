@@ -63,4 +63,25 @@ module datapath (
 	// (Address Mux), etc. so that your code is easier to understand.
 
 	// ADD CODE HERE
+	
+	//PC Register - Datapath PPT-SEM10
+	flopenr #(32) pcreg(
+		.clk(clk),
+		.reset(reset),
+		.en(PCWrite),
+		.d(Result),
+		.q(PC)
+	);
+	
+	//ADRESS MUX
+	mux2 #(32) adrmux(
+		.d0(PC),
+		.d1(Result),
+		.s(AdrSrc),
+		.y(Adr)
+	);
+	
+	
+	
+	
 endmodule
