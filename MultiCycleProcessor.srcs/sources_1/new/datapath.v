@@ -64,7 +64,7 @@ module datapath (
 
 	// ADD CODE HERE
 	
-	//PC Register - Datapath PPT-SEM10
+	//ADD: PC Register - Datapath PPT-SEM10
 	flopenr #(32) pcreg(
 		.clk(clk),
 		.reset(reset),
@@ -73,7 +73,7 @@ module datapath (
 		.q(PC)
 	);
 	
-	//ADRESS MUX
+	//ADD: AdressMux
 	mux2 #(32) adrmux(
 		.d0(PC),
 		.d1(Result),
@@ -81,7 +81,88 @@ module datapath (
 		.y(Adr)
 	);
 	
+	//ADD: Module Extend
+	extend ext(
+		.Instr(Instr[23:0]),
+		.ImmSrc(ImmSrc),
+		.ExtImm(ExtImm)
+	);
 	
+	// ADD: alu
+	alu alu(
+		SrcA,
+		SrcB,
+		ALUControl,
+		ALUResult,
+		ALUFlags
+	);
+	
+	// ADD: RegFile
+	regfile rf(
+		.clk(clk),
+		.we3(RegWrite),
+		.ra1(RA1),
+		.ra2(RA2),
+		.wa3(Instr[15:12]),
+		.wd3(Result),
+		.r15(Result),
+		.rd1(RD1),
+		.rd2(RD2)
+	);
+	
+	// ADD: RA1 - Mux2
+	mux2 #(4) ra1mux(
+		.d0(Instr[19:16]),
+		.d1(4'b1111),
+		.s(RegSrc[0]),
+		.y(RA1)
+	);
+	
+	
+	// ADD: RA2 - Mux2
+	mux2 #(4) ra2mux(
+		.d0(Instr[3:0]),
+		.d1(Instr[15:12]),
+		.s(RegSrc[1]),
+		.y(RA2)
+	);
+	
+	
+	// ADD: SrcB-MUX3
+	mux3 #(32) srcbmux(
+		.d0(WriteData),
+		.d1(ExtImm),
+		.d2(4),
+		.s(ALUSrcB),
+		.y(SrcB)
+	);
+	
+	// ADD: Registro-ALUResult-FLOPR
+	flopr #(32) regaluresult(
+		.clk(clk),
+		.reset(reset),
+		.d(ALUResult),
+		.q(ALUOut)
+	);
+	
+	// ADD: SrcA-MUX3
+	mux3 #(32) srcamux(
+		.d0(A),
+		.d1(PC),
+		.d2(ALUOut),
+		.s(ALUSrcA),
+		.y(SrcA)
+	);
+	
+	
+	// ADD: resultmux
+	mux3 #(32) resmux(
+		.d0(ALUOut),
+		.d1(Data),
+		.d2(ALUResult),
+		.s(ResultSrc),
+		.y(Result)
+	);
 	
 	
 endmodule
