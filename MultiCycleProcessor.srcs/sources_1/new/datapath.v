@@ -64,7 +64,7 @@ module datapath (
 
 	// ADD CODE HERE
 	
-	//ADD: PC Register - Datapath PPT-SEM10
+	//ADD: PC Register 
 	flopenr #(32) pcreg(
 		.clk(clk),
 		.reset(reset),
@@ -73,7 +73,7 @@ module datapath (
 		.q(PC)
 	);
 	
-	//ADD: AdressMux
+	//ADD: AdressMux - MUX2
 	mux2 #(32) adrmux(
 		.d0(PC),
 		.d1(Result),
@@ -127,6 +127,33 @@ module datapath (
 		.y(RA2)
 	);
 	
+	// ADD: RegistroEnable-InstrMemory - FLOPENR
+	flopenr #(32) reginstr(
+		.clk(clk),
+		.reset(reset),
+		.en(IRWrite),
+		.d(ReadData),
+		.q(Instr)
+	);
+	
+	// ADD: RegistroInstr/DataMemory-RegFile - FLOPR
+	flopr #(32) regread_data(
+		.clk(clk),
+		.reset(reset),
+		.d(ReadData),
+		.q(Data)
+	);
+	
+	// ADD: Registro-RegFile - FLOPREGFILE.v
+	flopregfile #(32) regfiledata(
+		.clk(clk),
+		.reset(reset),
+		.d0(RD1),
+		.d1(RD2),
+		.q0(A),
+		.q1(WriteData)
+	);
+	
 	
 	// ADD: SrcB-MUX3
 	mux3 #(32) srcbmux(
@@ -155,7 +182,7 @@ module datapath (
 	);
 	
 	
-	// ADD: resultmux
+	// ADD: resultmux - MUX3
 	mux3 #(32) resmux(
 		.d0(ALUOut),
 		.d1(Data),

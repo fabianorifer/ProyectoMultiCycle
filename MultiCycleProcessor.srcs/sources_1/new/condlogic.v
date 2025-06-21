@@ -41,8 +41,7 @@ module condlogic (
 	
 	// ADD CODE HERE
 	
-	
-	//agregado del single cycle
+	//agregado del single cycle-condlogic.v
 	flopenr #(2) flagreg1(
 		.clk(clk),
 		.reset(reset),
