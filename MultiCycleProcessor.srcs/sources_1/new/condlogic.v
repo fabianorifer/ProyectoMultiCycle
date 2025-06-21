@@ -49,7 +49,7 @@ module condlogic (
 		.d(ALUFlags[3:2]),
 		.q(Flags[3:2])
 	);
-	
+	   
 	flopenr #(2) flagreg0(
 		.clk(clk),
 		.reset(reset),

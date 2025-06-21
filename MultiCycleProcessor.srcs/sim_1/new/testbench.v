@@ -2,13 +2,13 @@ module testbench;
 	reg clk;
 	reg reset;
 	wire [31:0] WriteData;
-	wire [31:0] DataAdr;
+	wire [31:0] Adr;
 	wire MemWrite;
 	top dut(
 		.clk(clk),
 		.reset(reset),
 		.WriteData(WriteData),
-		.DataAdr(DataAdr),
+		.Adr(Adr),
 		.MemWrite(MemWrite)
 	);
 	initial begin
