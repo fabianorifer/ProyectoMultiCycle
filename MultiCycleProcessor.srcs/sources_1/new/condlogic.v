@@ -30,6 +30,8 @@ module condlogic (
 	wire [1:0] FlagWrite;
 	wire [3:0] Flags;
 	wire CondEx;
+	wire CondEx_Act;
+	wire PCSrc;
 
 	// Delay writing flags until ALUWB state
 	flopr #(2) flagwritereg(
@@ -58,6 +60,13 @@ module condlogic (
 		.q(Flags[1:0])
 	);
 	
+	flopr #(1) condexreg(
+	   .clk(clk),
+	   .reset(reset),
+	   .d(CondEx),
+	   .q(CondEx_Act)
+	);
+	
 	condcheck cc(
 		.Cond(Cond),
 		.Flags(Flags),
@@ -65,9 +74,9 @@ module condlogic (
 	);
 
 
-	assign RegWrite = RegW & CondEx;
-    assign MemWrite = MemW & CondEx;
-    assign PCSrc = PCS & CondEx;
+	assign RegWrite = RegW & CondEx_Act;
+    assign MemWrite = MemW & CondEx_Act;
+    assign PCSrc = PCS & CondEx_Act;
     //nueva salida PCWrite agregada en multicycle
     assign PCWrite =  PCSrc | NextPC;
 
