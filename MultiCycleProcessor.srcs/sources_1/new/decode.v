@@ -61,19 +61,23 @@ module decode (
 	always @(*)
 	if (ALUOp) 
 	begin
-	  if(MUL == 4'b1001)
+	  // cmd: MUL
+	  if(MUL == 4'b1001) 
 	   case (Funct[4:1])
-	       4'b0000: ALUControl = 3'b101; //mul
-	       4'b0001: ALUControl = 3'b110; //umull
+	       4'b0000: ALUControl = 3'b101; // mul - 5
+	       //4'b0100: ALUControl = 3'b110; // smull - 6
+	       //4'b0110: ALUControl = 3'b111; // umull - 7
+	       //4'b1000: ALUControl = 3'b100; // div - 4
 	       default: ALUControl = 3'bxxx;
 	   endcase
 	   
 	 else
 	   case (Funct[4:1])  
-			4'b0100: ALUControl = 3'b000; // add
-			4'b0010: ALUControl = 3'b001; // sub
-			4'b0000: ALUControl = 3'b010; // and
-			4'b1100: ALUControl = 3'b011; // orr
+			4'b0100: ALUControl = 3'b000; // add - 0
+			4'b0010: ALUControl = 3'b001; // sub - 1
+			4'b0000: ALUControl = 3'b010; // and - 2
+			4'b1100: ALUControl = 3'b011; // orr - 3
+			4'b1101: ALUControl = 3'b100; // mov - 4
 			default: ALUControl = 3'bxxx;
 			endcase
 			

@@ -44,6 +44,8 @@ module mainfsm (
 	localparam [3:0] ALUWB = 8; 
 	localparam [3:0] BRANCH = 9;
 	localparam [3:0] UNKNOWN = 10;
+	localparam [3:0] EXECUTEMOV = 11;
+	localparam [3:0] EXECUTEMOVI = 12;
 	
 
 	// state register
@@ -65,10 +67,15 @@ module mainfsm (
 			DECODE:
 				case (Op)
 					2'b00:
-						if (Funct[5])
-							nextstate = EXECUTEI;
-						else
-							nextstate = EXECUTER;
+					if (Funct[4:1] == 4'b1101)
+					   if(Funct[5])
+						nextstate = EXECUTEMOVI;
+					else
+						nextstate = EXECUTEMOV;
+				    else if (Funct[5])
+				        nextstate = EXECUTEI;
+					else
+						nextstate = EXECUTER;
 					2'b01: nextstate = MEMADR;
 					2'b10: nextstate = BRANCH;
 					default: nextstate = UNKNOWN;
@@ -111,6 +118,8 @@ module mainfsm (
 			MEMRD: controls =    13'b0000010000000;
 			MEMWB:  controls =    13'b0001000100000;
 			BRANCH: controls =   13'b0100001010010;
+			EXECUTEMOV: controls = 13'b0001001000001;
+			EXECUTEMOVI: controls = 13'b0001001000011;
 			default: controls = 13'bxxxxxxxxxxxxx;
 		endcase
 		end

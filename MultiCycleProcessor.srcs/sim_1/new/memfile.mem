@@ -5,6 +5,8 @@ E2802005    // ADD R2, R0, #5
 E280300C    // ADD R3, R0, #12 
 E2437009    // SUB R7, R3, #9 
 E0080297    // MUL R8, R7, R2
+E1A09008    // MOV R9, R8
+E3A0A005    // MOV R10, #5
 
 // Test - Instrucciones Appendix B (Challenge Single Cycle):
 // ---------------------------------------------------------------

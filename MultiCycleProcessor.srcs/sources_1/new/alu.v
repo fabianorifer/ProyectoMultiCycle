@@ -15,7 +15,7 @@ module alu(
         3'b000, 3'b001: ALUResult = sum; // add - sub
         3'b010: ALUResult = SrcA & SrcB; // and
         3'b011: ALUResult = SrcA | SrcB; // orr
-        //3'b100: ALUResult = SrcA ^ SrcB; // eor
+        3'b100: ALUResult = SrcB; // mov
         3'b101: ALUResult = SrcA * SrcB; // multiplicacion
         3'b110: {Extend, ALUResult} = SrcA * SrcB;
         default: ALUResult = 32'b0;
