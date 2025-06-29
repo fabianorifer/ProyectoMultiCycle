@@ -4,6 +4,7 @@ module decode (
 	Op,
 	Funct,
 	Rd,
+	MUL, // add
 	FlagW,
 	PCS,
 	NextPC,
@@ -23,6 +24,7 @@ module decode (
 	input wire [1:0] Op;
 	input wire [5:0] Funct;
 	input wire [3:0] Rd;
+	input wire [3:0] MUL;
 	output reg [1:0] FlagW;
 	output wire PCS;
 	output wire NextPC;
@@ -55,11 +57,19 @@ module decode (
 		.Branch(Branch),
 		.ALUOp(ALUOp)
 	);
-
+    // ALU DECODER
 	always @(*)
 	if (ALUOp) 
 	begin
+	  if(MUL == 4'b1001)
 	   case (Funct[4:1])
+	       4'b0000: ALUControl = 3'b101; //mul
+	       4'b0001: ALUControl = 3'b110; //umull
+	       default: ALUControl = 3'bxxx;
+	   endcase
+	   
+	 else
+	   case (Funct[4:1])  
 			4'b0100: ALUControl = 3'b000; // add
 			4'b0010: ALUControl = 3'b001; // sub
 			4'b0000: ALUControl = 3'b010; // and

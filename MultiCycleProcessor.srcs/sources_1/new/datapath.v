@@ -55,6 +55,18 @@ module datapath (
 	wire [31:0] ALUOut;
 	wire [3:0] RA1;
 	wire [3:0] RA2;
+	wire [3:0] mulRA1;
+	wire [3:0] mulRA2;
+	wire [3:0] res;
+	
+	//cambiar el formato (harris &harris)
+	assign mulRA1 = (Instr[7:4] == 4'b1001) ? Instr[3:0] : Instr[19:16];
+	
+	assign mulRA2 = (Instr[7:4] == 4'b1001) ? Instr[11:8] : Instr[3:0];
+	
+	//resultado RD:
+	
+	assign res = (Instr[7:4] == 4'b1001) ? Instr[19:16] : Instr[15:12];
 
 	// Your datapath hardware goes below. Instantiate each of the 
 	// submodules that you need. Remember that you can reuse hardware
@@ -103,7 +115,7 @@ module datapath (
 		.we3(RegWrite),
 		.ra1(RA1),
 		.ra2(RA2),
-		.wa3(Instr[15:12]),
+		.wa3(res),
 		.wd3(Result),
 		.r15(Result),
 		.rd1(RD1),
@@ -112,7 +124,7 @@ module datapath (
 	
 	// ADD: RA1 - Mux2
 	mux2 #(4) ra1mux(
-		.d0(Instr[19:16]),
+		.d0(mulRA1),
 		.d1(4'b1111),
 		.s(RegSrc[0]),
 		.y(RA1)
@@ -121,7 +133,7 @@ module datapath (
 	
 	// ADD: RA2 - Mux2
 	mux2 #(4) ra2mux(
-		.d0(Instr[3:0]),
+		.d0(mulRA2),
 		.d1(Instr[15:12]),
 		.s(RegSrc[1]),
 		.y(RA2)

@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="20.650 ns"></ZoomStartTime>
-      <ZoomEndTime time="103.751 ns"></ZoomEndTime>
-      <Cursor1Time time="74.050 ns"></Cursor1Time>
+      <ZoomStartTime time="119.680 ns"></ZoomStartTime>
+      <ZoomEndTime time="183.981 ns"></ZoomEndTime>
+      <Cursor1Time time="202.960 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="131"></NameColumnWidth>
-      <ValueColumnWidth column_width="69"></ValueColumnWidth>
+      <NameColumnWidth column_width="113"></NameColumnWidth>
+      <ValueColumnWidth column_width="72"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="13" />
+   <WVObjectSize size="17" />
    <wvobject fp_name="/testbench/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -73,5 +73,21 @@
       <obj_property name="ElementShortName">ALUControl[2:0]</obj_property>
       <obj_property name="ObjectShortName">ALUControl[2:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/dut/arm/c/dec/MUL" type="array">
+      <obj_property name="ElementShortName">MUL[3:0]</obj_property>
+      <obj_property name="ObjectShortName">MUL[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/dut/arm/c/Instr" type="array">
+      <obj_property name="ElementShortName">Instr[31:4]</obj_property>
+      <obj_property name="ObjectShortName">Instr[31:4]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/dut/arm/dp/alu/SrcA" type="array">
+      <obj_property name="ElementShortName">SrcA[31:0]</obj_property>
+      <obj_property name="ObjectShortName">SrcA[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/dut/arm/dp/alu/SrcB" type="array">
+      <obj_property name="ElementShortName">SrcB[31:0]</obj_property>
+      <obj_property name="ObjectShortName">SrcB[31:0]</obj_property>
    </wvobject>
 </wave_config>
