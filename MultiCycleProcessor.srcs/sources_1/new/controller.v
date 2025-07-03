@@ -9,6 +9,7 @@ module controller (
 	IRWrite,
 	AdrSrc,
 	RegSrc,
+	//MUL,
 	ALUSrcA,
 	ALUSrcB,
 	ResultSrc,

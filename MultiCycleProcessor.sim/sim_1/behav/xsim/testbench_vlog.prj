@@ -15,6 +15,7 @@ verilog xil_defaultlib  \
 "../../../../MultiCycleProcessor.srcs/sources_1/new/mem.v" \
 "../../../../MultiCycleProcessor.srcs/sources_1/new/mux2.v" \
 "../../../../MultiCycleProcessor.srcs/sources_1/new/mux3.v" \
+"../../../../MultiCycleProcessor.srcs/sources_1/new/mux4.v" \
 "../../../../MultiCycleProcessor.srcs/sources_1/new/regfile.v" \
 "../../../../MultiCycleProcessor.srcs/sources_1/new/top.v" \
 "../../../../MultiCycleProcessor.srcs/sim_1/new/testbench.v" \

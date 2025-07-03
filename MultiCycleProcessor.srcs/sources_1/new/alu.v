@@ -1,7 +1,8 @@
 module alu(
     input [31:0] SrcA, SrcB,
     input [2:0] ALUControl,
-    output reg [31:0] ALUResult, Extend,
+    output reg [31:0] ALUResult,
+    output reg [31:0] Large,
     output wire [3:0] ALUFlags
     );
     wire  neg, zero, carry, overflow;
@@ -17,15 +18,18 @@ module alu(
         3'b011: ALUResult = SrcA | SrcB; // orr
         3'b100: ALUResult = SrcB; // mov
         3'b101: ALUResult = SrcA * SrcB; // multiplicacion
-        3'b110: {Extend, ALUResult} = SrcA * SrcB;
+        3'b110: {Large, ALUResult} = SrcA * SrcB;  // UMUL
         default: ALUResult = 32'b0;
         endcase
     end
+    
+    
     assign neg = ALUResult[31];
     assign zero = (ALUResult == 32'b0);
-    assign carry = (ALUControl == 3'b000 || ALUControl == 3'b001) & sum[32];
-    assign overflow = (ALUControl == 3'b000 || ALUControl == 3'b001)
-    & ~(SrcA[31] ^ SrcB[31] ^ ALUControl[0]) & (SrcA[31] ^ sum[31]);
+    assign carry = (ALUControl[2:0] == 101) ? 0 :(ALUControl[1] == 1'b0) & sum[32];
+    assign overflow = (ALUControl[2:0] == 101) ? 0 : ((ALUControl[1] == 1'b0) 
+        & ~(SrcA[31] ^ SrcB[31] ^ ALUControl[0]) 
+        & (SrcA[31] ^ sum[31]));
 
     assign ALUFlags = {neg, zero, carry, overflow};
 endmodule

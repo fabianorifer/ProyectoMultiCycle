@@ -50,6 +50,7 @@ module decode (
 		.AdrSrc(AdrSrc),
 		.ALUSrcA(ALUSrcA),
 		.ALUSrcB(ALUSrcB),
+		.MUL(MUL),
 		.ResultSrc(ResultSrc),
 		.NextPC(NextPC),
 		.RegW(RegW),
@@ -62,15 +63,18 @@ module decode (
 	if (ALUOp) 
 	begin
 	  // cmd: MUL
-	  if(MUL == 4'b1001) 
+	  if(MUL == 4'b1001) begin 
 	   case (Funct[4:1])
 	       4'b0000: ALUControl = 3'b101; // mul - 5
-	       //4'b0100: ALUControl = 3'b110; // smull - 6
-	       //4'b0110: ALUControl = 3'b111; // umull - 7
-	       //4'b1000: ALUControl = 3'b100; // div - 4
+	       4'b0100: ALUControl = 3'b110; // umul - 6
+	       //4'b0110: ALUControl = 3'b010; // smul - 7
+	       //4'b1000: ALUControl = 3'b111; // udiv - 4
 	       default: ALUControl = 3'bxxx;
 	   endcase
-	   
+	   FlagW[1] = Funct[0];
+       FlagW[0] = Funct[0] & ((ALUControl == 3'b000) | (ALUControl == 3'b001));
+	 end
+	 
 	 else
 	   case (Funct[4:1])  
 			4'b0100: ALUControl = 3'b000; // add - 0
@@ -82,11 +86,7 @@ module decode (
 			endcase
 			
 		FlagW[1] = Funct[0];
-		FlagW[0] = Funct[0] & (
-			(ALUControl == 3'b000) | 
-			(ALUControl == 3'b001) | 
-			(ALUControl == 3'b101)
-		);
+        FlagW[0] = Funct[0] & ((ALUControl == 3'b000) | (ALUControl == 3'b001));
 	end
 	else begin
 		ALUControl = 3'b000;

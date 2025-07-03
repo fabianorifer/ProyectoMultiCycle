@@ -8,6 +8,7 @@ module mainfsm (
 	ALUSrcA,
 	ALUSrcB,
 	ResultSrc,
+	MUL,
 	NextPC,
 	RegW,
 	MemW,
@@ -18,6 +19,7 @@ module mainfsm (
 	input wire reset;
 	input wire [1:0] Op;
 	input wire [5:0] Funct;
+	input wire [3:0] MUL;
 	output wire IRWrite;
 	output wire AdrSrc;
 	output wire [1:0] ALUSrcA;
@@ -46,6 +48,7 @@ module mainfsm (
 	localparam [3:0] UNKNOWN = 10;
 	localparam [3:0] EXECUTEMOV = 11;
 	localparam [3:0] EXECUTEMOVI = 12;
+	localparam [3:0] ALUWB2 = 13; // d
 	
 
 	// state register
@@ -82,7 +85,16 @@ module mainfsm (
 				endcase
 				
 			// Agregué los estados y los conecté segun FSM MultiCycle PPT SEM10
+			
 			EXECUTER: nextstate = ALUWB;
+			
+			ALUWB: 
+			         if(Funct[4:1] == 4'b0100 && MUL == 4'b1001) // umul
+			         nextstate = ALUWB2;
+			else    
+			         nextstate = FETCH;
+			
+		    ALUWB2: nextstate = FETCH;
 			EXECUTEI: nextstate = ALUWB;
 			MEMADR:
 			     if(Funct[0])
@@ -93,7 +105,6 @@ module mainfsm (
 			MEMRD: nextstate = MEMWB;
 			MEMWB: nextstate = FETCH;
 			MEMWR: nextstate = FETCH;
-			ALUWB: nextstate = FETCH;
 			BRANCH: nextstate = FETCH;
 		
 			default: nextstate = FETCH;
@@ -112,14 +123,15 @@ module mainfsm (
 			DECODE: controls = 13'b0000001001100;
 			EXECUTER: controls = 13'b0000000000001;
 			EXECUTEI: controls = 13'b0000000000011;
-			ALUWB: controls =    13'b0001000000000;
+			ALUWB: controls =    13'b0_0_0_1_0_0_00_00_00_0; // 00: Ra (parte baja)
 			MEMADR: controls =   13'b0000000000010;
 			MEMWR: controls =    13'b0010010000000;
 			MEMRD: controls =    13'b0000010000000;
 			MEMWB:  controls =    13'b0001000100000;
 			BRANCH: controls =   13'b0100001010010;
 			EXECUTEMOV: controls = 13'b0001001000001;
-			EXECUTEMOVI: controls = 13'b0001001000011;
+			EXECUTEMOVI: controls = 13'b0001001000011; // ultimo 7: 2: ResultSrc, 2: ALUSrcA, 2: AluSrcB, 1: ALUOp
+			ALUWB2: controls = 13'b0_0_0_1_001100000; // 11: Rd (parte alta)
 			default: controls = 13'bxxxxxxxxxxxxx;
 		endcase
 		end

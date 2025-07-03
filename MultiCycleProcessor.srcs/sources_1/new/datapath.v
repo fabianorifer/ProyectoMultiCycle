@@ -53,20 +53,64 @@ module datapath (
 	wire [31:0] A;
 	wire [31:0] ALUResult;
 	wire [31:0] ALUOut;
+	wire [31:0] Large;
 	wire [3:0] RA1;
 	wire [3:0] RA2;
 	wire [3:0] mulRA1;
 	wire [3:0] mulRA2;
-	wire [3:0] res;
+	wire [3:0] Rd;
+	wire [3:0] Ra;
+	//wire [3:0] res;
+	reg [3:0] res;
+	wire [31:0] Large1;
+	wire [31:0] Large2;
 	
 	//cambiar el formato (harris &harris)
 	assign mulRA1 = (Instr[7:4] == 4'b1001) ? Instr[3:0] : Instr[19:16];
 	
 	assign mulRA2 = (Instr[7:4] == 4'b1001) ? Instr[11:8] : Instr[3:0];
 	
-	//resultado RD:
+	//resultado RD - (MUL):
+	//assign res = (Instr[7:4] == 4'b1001) ? Instr[19:16] : Instr[15:12];
 	
-	assign res = (Instr[7:4] == 4'b1001) ? Instr[19:16] : Instr[15:12];
+	//Registros Destinos Ra y Rd:
+    assign Rd = Instr[15:12];  // <- Registro destino (correcto)
+    assign Ra = Instr[19:16];  // <- Rn (fuente, correcto)
+
+	
+	//resultado Rd, Ra - (UMULL):
+	
+	always @(*) begin
+    if (Instr[7:4] == 4'b1001) begin
+        // Instrucción UMULL
+        if (ResultSrc == 2'b11)
+            res = Rd; // Parte baja primero
+        else
+            res = Ra; // Parte alta después
+    end else begin
+        // Para cualquier otra instrucción
+        if (ResultSrc == 2'b00)
+            res = Rd;
+        else if (ResultSrc == 2'b11)
+            res = Ra;
+        else
+            res = Rd;
+    end
+end
+	       
+
+	
+	/*
+	assign res = (ResultSrc == 2'b00) ? Rd :
+             (ResultSrc == 2'b11) ? Ra : 
+             ((Instr[7:4] == 4'b1001) ? Ra : Rd);
+             */
+
+	
+	
+	
+	//resultado UMUL:
+	//assign res = (state == 4'd13) ? Instr[15:12] : ((Instr[7:4] == 4'b1001) ? Instr[19:16] : Instr[15:12]);
 
 	// Your datapath hardware goes below. Instantiate each of the 
 	// submodules that you need. Remember that you can reuse hardware
@@ -102,11 +146,12 @@ module datapath (
 	
 	// ADD: alu
 	alu alu(
-		SrcA,
-		SrcB,
-		ALUControl,
-		ALUResult,
-		ALUFlags
+		.SrcA(SrcA),
+		.SrcB(SrcB),
+		.ALUControl(ALUControl),
+		.ALUResult(ALUResult),
+		.Large(Large),
+		.ALUFlags(ALUFlags)
 	);
 	
 	// ADD: RegFile
@@ -129,7 +174,6 @@ module datapath (
 		.s(RegSrc[0]),
 		.y(RA1)
 	);
-	
 	
 	// ADD: RA2 - Mux2
 	mux2 #(4) ra2mux(
@@ -166,6 +210,15 @@ module datapath (
 		.q1(WriteData)
 	);
 	
+	// ADD: SrcA-MUX3
+	mux3 #(32) srcamux(
+		.d0(A),
+		.d1(PC),
+		.d2(ALUOut),
+		.s(ALUSrcA),
+		.y(SrcA)
+	);
+	
 	
 	// ADD: SrcB-MUX3
 	mux3 #(32) srcbmux(
@@ -184,21 +237,29 @@ module datapath (
 		.q(ALUOut)
 	);
 	
-	// ADD: SrcA-MUX3
-	mux3 #(32) srcamux(
-		.d0(A),
-		.d1(PC),
-		.d2(ALUOut),
-		.s(ALUSrcA),
-		.y(SrcA)
+	flopr #(32) large1(
+		.clk(clk),
+		.reset(reset),
+		.d(Large),
+		.q(Large1)
+	);
+	
+	flopr #(32) large2(
+		.clk(clk),
+		.reset(reset),
+		.d(Large1),
+		.q(Large2)
 	);
 	
 	
+	
+	
 	// ADD: resultmux - MUX3
-	mux3 #(32) resmux(
+	mux4 #(32) resmux(
 		.d0(ALUOut),
 		.d1(Data),
 		.d2(ALUResult),
+		.d3(Large2),
 		.s(ResultSrc),
 		.y(Result)
 	);
