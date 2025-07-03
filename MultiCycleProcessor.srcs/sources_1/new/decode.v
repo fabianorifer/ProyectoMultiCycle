@@ -68,7 +68,6 @@ module decode (
 	       4'b0000: ALUControl = 3'b101; // mul - 5
 	       4'b0100: ALUControl = 3'b110; // umul - 6
 	       //4'b0110: ALUControl = 3'b010; // smul - 7
-	       //4'b1000: ALUControl = 3'b111; // udiv - 4
 	       default: ALUControl = 3'bxxx;
 	   endcase
 	   FlagW[1] = Funct[0];
@@ -82,6 +81,7 @@ module decode (
 			4'b0000: ALUControl = 3'b010; // and - 2
 			4'b1100: ALUControl = 3'b011; // orr - 3
 			4'b1101: ALUControl = 3'b100; // mov - 4
+			4'b1010: ALUControl = 3'b111; // udiv - 7
 			default: ALUControl = 3'bxxx;
 			endcase
 			

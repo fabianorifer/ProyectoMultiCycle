@@ -19,6 +19,7 @@ module alu(
         3'b100: ALUResult = SrcB; // mov
         3'b101: ALUResult = SrcA * SrcB; // multiplicacion
         3'b110: {Large, ALUResult} = SrcA * SrcB;  // UMUL
+        3'b111: ALUResult = (SrcB != 0) ? SrcA / SrcB : 32'b0; // udiv 
         default: ALUResult = 32'b0;
         endcase
     end
